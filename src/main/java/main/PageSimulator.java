@@ -12,7 +12,10 @@ public class PageSimulator {
         
         Terminal ui = new Terminal();
         
-        ui.showMessage("Teste");
+        String tipoAlgoritmo = args[0];
+        
+        
+        ui.showMessage(tipoAlgoritmo);
         
         System.out.println("Hello World!");
     }
