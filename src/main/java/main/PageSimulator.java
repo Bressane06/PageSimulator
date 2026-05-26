@@ -14,7 +14,6 @@ public class PageSimulator {
         
         String tipoAlgoritmo = args[0];
         
-        
         ui.showMessage(tipoAlgoritmo);
         
         System.out.println("Hello World!");
