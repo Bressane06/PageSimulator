@@ -10,8 +10,12 @@ Projeto Java simples para simular a execução de um algoritmo a partir da class
 ## Estrutura
 
 - `src/main/java/main/PageSimulator.java` - ponto de entrada da aplicação
-- `src/main/java/ui/Terminal.java` - implementação simples da interface de saída
-- `src/main/java/ui/UserInterface.java` - contrato de interface
+- `src/main/java/main/PageSimuladorOperacoes.java` - parsing e inicialização
+- `src/main/java/simulacao/Simulacao.java` - orquestração da simulação
+- `src/main/java/arquivos` - implementação do backing store (`FilePageStore`, `PageStore`)
+- `src/main/java/memoria` - modelos `Pagina`, `Frame`
+- `src/main/java/algoritmos` - algoritmos de substituição (`FIFO`, `LRU`, ...)
+- `src/main/java/ui` - saída/terminal
 
 ## Como compilar
 
@@ -37,36 +41,38 @@ $sources = Get-ChildItem -Path src/main/java -Filter *.java -Recurse | ForEach-O
 
 ## Como executar
 
-A classe principal espera pelo menos um argumento. Exemplo:
+A aplicação espera os 5 parâmetros do enunciado na ordem:
 
-```bash
-java -cp target/classes main.PageSimulator fifo
+```
+java -cp target/classes main.PageSimulator [diretorio_das_paginas] [algoritmo] [numero_de_frames] [quantidade_paginas_unicas] [quantidade_paginas_requeridas]
 ```
 
-Saída esperada:
+Exemplo (gera páginas em `./teste`, usa FIFO, 3 frames, 10 páginas únicas, 50 requisições):
 
-```text
-fifo
-Hello World!
+```
+java -cp target/classes main.PageSimulator ./teste FIFO 3 10 50
 ```
 
-Se você executar sem argumentos, a aplicação vai falhar porque o código acessa `args[0]` diretamente.
+O programa gera as páginas (arquivos `0.pag`..`N-1.pag`) no diretório escolhido, executa a simulação e imprime, para cada requisição, a tabela de frames e conteúdo, e ao final exibe o algoritmo, a sequência de requisição e o total de page faults.
 
-## Como testar
+## Testes manuais e utilitários
 
-Este projeto ainda não possui testes automatizados. Por enquanto, o teste válido é a execução manual da classe principal com um argumento:
+Há um utilitário para gerar e inspecionar rapidamente páginas:
 
-```bash
-java -cp target/classes main.PageSimulator fifo
+```
+java -cp target/classes main.TestGerador <diretorio> <quantidade_paginas>
 ```
 
-Se a saída for parecida com a abaixo, a aplicação está funcionando:
+Exemplo:
 
-```text
-fifo
-Hello World!
 ```
+java -cp target/classes main.TestGerador test_pages 5
+```
+
+Isso cria os arquivos `0.pag`..`4.pag` em `test_pages` e imprime o conteúdo gerado.
+
+O projeto ainda não tem testes JUnit; para validação automática você pode adicionar testes que verifiquem o comportamento de `algoritmos/FIFO` e `algoritmos/LRU`.
 
 ## Observação
 
-O comando `mvn exec:java` só vai funcionar se o plugin `exec-maven-plugin` for adicionado ao `pom.xml`. Hoje, o jeito mais simples é compilar com `mvn clean compile` e executar com `java -cp target/classes main.PageSimulator fifo`.
+O comando `mvn exec:java` só vai funcionar se o plugin `exec-maven-plugin` for adicionado ao `pom.xml`. Hoje o modo suportado é compilar com `mvn clean compile` ou usar `javac` conforme mostrado acima e executar com `java -cp target/classes main.PageSimulator ...`.

@@ -79,9 +79,9 @@ public class Simulacao {
                 fifo.registrarEntrada(frameLivre);
             } else {
                 int frameSubstituir = fifo.escolherFrameParaSubstituir(frames);
-                if (frameSubstituir != -1) {
+                if (frameSubstituir != -1) 
                     frames[frameSubstituir].setPagina(pagina);
-                }
+                
             }
 
             imprimirFrames(frames);
@@ -113,9 +113,9 @@ public class Simulacao {
 
     private Frame[] criarFrames(int quantidade) {
         Frame[] frames = new Frame[quantidade];
-        for (int i = 0; i < quantidade; i++) {
+        for (int i = 0; i < quantidade; i++) 
             frames[i] = new Frame();
-        }
+        
         return frames;
     }
 
