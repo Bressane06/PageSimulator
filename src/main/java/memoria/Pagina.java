@@ -1,4 +1,4 @@
-package simulacao;
+package memoria;
 
 public class Pagina {
 
@@ -18,3 +18,4 @@ public class Pagina {
         return conteudo;
     }
 }
+

@@ -1,9 +1,10 @@
-package backingstore;
+package arquivos;
 
-import simulacao.Pagina;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.util.List;
+
+import memoria.Pagina;
 
 public interface PageStore {
 

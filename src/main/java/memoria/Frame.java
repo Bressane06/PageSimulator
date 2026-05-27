@@ -1,4 +1,4 @@
-package simulacao;
+package memoria;
 
 public class Frame {
 
@@ -6,6 +6,10 @@ public class Frame {
 
     public Frame() {
         this.pagina = null;
+    }
+
+    public boolean estaVazio() {
+        return pagina == null;
     }
 
     public Pagina getPagina() {
@@ -16,7 +20,4 @@ public class Frame {
         this.pagina = pagina;
     }
 
-    public boolean estaLivre() {
-        return pagina == null;
-    }
 }
