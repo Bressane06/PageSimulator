@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import ui.Terminal;
+import backingstore.FilePageStore;
+import backingstore.PageStore;
 
 public class Simulacao {
 
@@ -19,24 +21,21 @@ public class Simulacao {
 
         Path dir = Paths.get(config.getDiretorio_das_paginas());
         int qtd = Integer.parseInt(config.getQuantidade_de_paginas_unicas());
-    
-        GeradorPaginas gerador = new GeradorPaginas();
+
+        PageStore store = new FilePageStore();
         List<Pagina> paginas = null;
-        
+
         try {
-            paginas = gerador.gerarPaginas(dir, qtd);
+            paginas = store.generatePages(dir, qtd);
         } catch (Exception e) {
             System.err.println("Erro ao gerar páginas: " + e.getMessage());
             return;
         }
-        
+
         ui.showMessage("Geradas " + paginas.size() + " paginas em: " + dir.toAbsolutePath());
         for (Pagina p : paginas) {
             ui.showMessage("Pagina " + p.getNumero() + " -> " + p.getConteudo());
         }
-        
 
-        // Aqui você pode implementar a lógica para executar a simulação usando a configuração fornecida.
-        // Isso pode incluir carregar as páginas, aplicar o algoritmo de substituição, contar falhas de página, etc.
     }
 }
