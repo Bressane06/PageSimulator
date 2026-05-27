@@ -8,7 +8,13 @@ public class ConfiguracaoSimulacao {
     public String quantidade_de_paginas_unicas;
     public String quantidades_de_paginas_requeridas;
 
-    public ConfiguracaoSimulacao (String diretorio_das_paginas, String algoritmo_de_substituicao_de_paginas, String numero_de_frames_de_memoria, String quantidade_de_paginas_unicas, String quantidades_de_paginas_requeridas) {
+    public ConfiguracaoSimulacao (
+        String diretorio_das_paginas, 
+        String algoritmo_de_substituicao_de_paginas, 
+        String numero_de_frames_de_memoria, 
+        String quantidade_de_paginas_unicas, 
+        String quantidades_de_paginas_requeridas) 
+    {
         this.diretorio_das_paginas = diretorio_das_paginas;
         this.algoritmo_de_substituicao_de_paginas = algoritmo_de_substituicao_de_paginas;
         this.numero_de_frames_de_memoria = numero_de_frames_de_memoria;

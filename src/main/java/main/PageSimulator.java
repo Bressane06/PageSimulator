@@ -1,7 +1,8 @@
 package main;
 
 import ui.Terminal;
-
+import simulacao.ConfiguracaoSimulacao;
+import simulacao.Simulacao;
 /**
  *
  * @author Gabriel Bressane
@@ -11,19 +12,19 @@ public class PageSimulator {
     public static void main(String[] args) {
         
         Terminal ui = new Terminal();
-        
-        String diretório_das_páginas = args[0];
-        String algoritmo_de_substituição_de_páginas = args[1];
-        String número_de_frames_de_memória = args[2];
-        String quantidade_de_páginas_únicas = args[3];
-        String quantidades_de_páginas_requeridas = args[4];
+
+        PageSimuladorOperacoes ops = new PageSimuladorOperacoes(ui, args);
+        ConfiguracaoSimulacao cfg = ops.configuracao;
+
+        Simulacao simulacao = new Simulacao(cfg);
+        simulacao.executarSimulacao(cfg);
 
 
-        ui.showMessage(diretório_das_páginas);
-        ui.showMessage(algoritmo_de_substituição_de_páginas);
-        ui.showMessage(número_de_frames_de_memória);
-        ui.showMessage(quantidade_de_páginas_únicas);
-        ui.showMessage(quantidades_de_páginas_requeridas);
+        ui.showMessage(cfg.getDiretorio_das_paginas());
+        ui.showMessage(cfg.getAlgoritmo_de_substituicao_de_paginas());
+        ui.showMessage(cfg.getNumero_de_frames_de_memoria());
+        ui.showMessage(cfg.getQuantidade_de_paginas_unicas());
+        ui.showMessage(cfg.getQuantidades_de_paginas_requeridas());
         
     }
 }
