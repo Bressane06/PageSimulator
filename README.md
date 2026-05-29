@@ -19,6 +19,26 @@ Projeto Java simples para simular a execução de um algoritmo a partir da class
 
 ## Como compilar
 
+### Scripts da raiz
+
+O projeto agora inclui scripts simples para compilar e executar sem precisar digitar os comandos completos toda vez:
+
+- Windows PowerShell: `compile.ps1` e `run.ps1`
+- Linux/macOS: `compile.sh` e `run.sh`
+
+Exemplos:
+
+```powershell
+.\compile.ps1
+.\run.ps1 ./teste LRU 5 6 15
+```
+
+```bash
+chmod +x compile.sh run.sh
+./compile.sh
+./run.sh ./teste LRU 5 6 15
+```
+
 ### Usando Maven
 
 Na raiz do projeto, execute:

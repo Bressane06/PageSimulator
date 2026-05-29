@@ -18,11 +18,15 @@ public class LFU implements AlgoritmoSubstituicao {
     public LFU(int numFrames) {
         this.frequencias = new int[numFrames];
         this.lastUsed = new long[numFrames];
+        // 0L é o valor inicial, indicando que o frame nunca foi usado. 
+        //      O tick começa em 0 e é incrementado a cada acesso ou entrada.
+        //      o L é para indicar que é um literal do tipo long, garantindo que o tipo seja correto.
         this.tick = 0L;
     }
 
     @Override
     public int escolherFrameParaSubstituir(Frame[] frames) {
+        
         int escolha = -1;
         int menorFrequencia = Integer.MAX_VALUE;
         long maisAntigo = Long.MAX_VALUE;

@@ -13,7 +13,7 @@ import memoria.Frame;
  * - `registrarEntrada`: chamado quando uma nova página é carregada no frame
  *   (inicializa/atualiza o timestamp);
  */
-public class LRU implements AlgoritmoSubstituicao {
+public class LRU implements AlgoritmoSubstituicao{
     private final long[] lastUsed;
     private long tick;
 
@@ -21,8 +21,11 @@ public class LRU implements AlgoritmoSubstituicao {
      * Constrói um LRU para um número fixo de frames.
      * lastUsed é inicializado com o tamanho dos frames e não é redimensionado.
      */
-    public LRU(int numFrames) {
+    public LRU(int numFrames){
         this.lastUsed = new long[numFrames];
+        // 0L é o valor inicial, indicando que o frame nunca foi usado. 
+        //      O tick começa em 0 e é incrementado a cada acesso ou entrada.
+        //      o L é para indicar que é um literal do tipo long, garantindo que o tipo seja correto.
         this.tick = 0L;
     }
 
@@ -32,20 +35,20 @@ public class LRU implements AlgoritmoSubstituicao {
         // - ao escolher um frame para substituir, o algoritmo percorre os frames e selecionados 
         //      aquele com o timestamp mais antigo (menor valor de lastUsed)
     @Override
-    public int escolherFrameParaSubstituir(Frame[] frames) {
+    public int escolherFrameParaSubstituir(Frame[] frames){
         
         int escolha = -1;
         long maisVelho = Long.MAX_VALUE;
 
-        for (int i = 0; i < frames.length; i++) {
+        for (int i = 0; i < frames.length; i++){
             Frame f = frames[i];
             
-            if (f == null || f.estaVazio()) 
+            if(f == null || f.estaVazio()) 
                 continue;
 
             long ultimoUsado = lastUsed[i];
             
-            if (ultimoUsado < maisVelho) {
+            if(ultimoUsado < maisVelho){
                 maisVelho = ultimoUsado;
                 escolha = i;
             }
@@ -55,13 +58,13 @@ public class LRU implements AlgoritmoSubstituicao {
     }
 
     @Override
-    public void registrarEntrada(int frameIndex) {
+    public void registrarEntrada(int frameIndex){
         tick++;
         lastUsed[frameIndex] = tick;
     }
 
     @Override
-    public void registrarAcesso(int frameIndex) {
+    public void registrarAcesso(int frameIndex){
         registrarEntrada(frameIndex);
     }
 
