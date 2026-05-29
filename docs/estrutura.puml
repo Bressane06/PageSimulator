@@ -1,140 +1,102 @@
 @startuml
-' Configurações de Aparência
+' Configurações para otimização de espaço
 skinparam Style strictuml
 skinparam PackageStyle rectangle
 skinparam shadowing false
-skinparam Nodesep 50
-skinparam Ranksep 50
+skinparam Nodesep 35
+skinparam Ranksep 40
 
-title Diagrama de Classes — PageSimulator
+title Diagrama de Classes — PageSimulator (Métodos Principais)
 
+' Pacote de Algoritmos - Foco na Lógica de Substituição
 package "algoritmos" {
     interface AlgoritmoSubstituicao <<interface>> {
         +int escolherFrameParaSubstituir(Frame[] frames)
         +void registrarEntrada(int frameIndex)
         +void registrarAcesso(int frameIndex)
     }
-    class FIFO implements AlgoritmoSubstituicao {
-        +FIFO()
-        +int escolherFrameParaSubstituir(Frame[] frames)
-        +void registrarEntrada(int frameIndex)
-    }
-    class LRU implements AlgoritmoSubstituicao {
-        +LRU(int numFrames)
-        +int escolherFrameParaSubstituir(Frame[] frames)
-        +void registrarEntrada(int frameIndex)
-        +void registrarAcesso(int frameIndex)
-    }
-    class LFU implements AlgoritmoSubstituicao {
-        +LFU(int numFrames)
-        +int escolherFrameParaSubstituir(Frame[] frames)
-        +void registrarEntrada(int frameIndex)
-        +void registrarAcesso(int frameIndex)
-    }
+    class FIFO implements AlgoritmoSubstituicao
+    class LRU implements AlgoritmoSubstituicao
+    class LFU implements AlgoritmoSubstituicao
 }
 
-package "arquivos" {
-    interface PageStore <<interface>> {
-        +List<Pagina> generatePages(Path dir, int qtd)
-        +Pagina loadPage(Path dir, int idx)
-        +List<Pagina> loadAll(Path dir)
-    }
-    class FilePageStore implements PageStore {
-        +List<Pagina> generatePages(Path dir, int qtd)
-        +Pagina loadPage(Path dir, int idx)
-        +List<Pagina> loadAll(Path dir)
-    }
-}
-
+' Pacote de Memória - Foco na estrutura de dados
 package "memoria" {
     class Frame {
         -Pagina pagina
-        +Frame()
         +boolean estaVazio()
-        +Pagina getPagina()
-        +void setPagina(Pagina pagina)
     }
     class Pagina {
         -int numero
         -String conteudo
-        +Pagina(int numero, String conteudo)
-        +int getNumero()
-        +String getConteudo()
     }
 }
 
-package "ui" {
-    interface UserInterface <<interface>> {
-        +void showMessage(String message)
-        +void showResults(String algoritmo, String sequencia, int totalFalhas)
-        +void showError(String error)
+' Pacote de Arquivos - Foco no IO
+package "arquivos" {
+    interface PageStore <<interface>> {
+        +List<Pagina> generatePages(Path dir, int qtd)
+        +Pagina loadPage(Path dir, int idx)
     }
-    class Terminal implements UserInterface {
-        +void showMessage(String message)
-        +void showResults(String algoritmo, String sequencia, int totalFalhas)
-        +void showError(String error)
-    }
+    class FilePageStore implements PageStore
 }
 
+' Pacote de Simulação - O "Cérebro" do projeto
 package "simulacao" {
     class ConfiguracaoSimulacao {
-        +String diretorio_das_paginas
-        +String algoritmo_de_substituicao_de_paginas
-        +String numero_de_frames_de_memoria
-        +String quantidade_de_paginas_unicas
-        +String quantidades_de_paginas_requeridas
-        +getters()/setters()
+        +String algoritmo_selecionado
+        +int numero_frames
     }
     class Simulacao {
-        -ConfiguracaoSimulacao config
-        -Terminal ui
-        -SimulacaoAlgoritmos simulacaoAlgoritmos
-        +Simulacao(ConfiguracaoSimulacao config)
         +void executarSimulacao()
     }
     class SimulacaoAlgoritmos {
-        -ConfiguracaoSimulacao config
-        -Terminal ui
-        +SimulacaoAlgoritmos(ConfiguracaoSimulacao config, Terminal ui)
         +void escolherAlgoritmo(List<Pagina> paginas)
-        +void simularFIFO(List<Pagina> paginas, int numeroDeFrames)
-        +void simularLRU(List<Pagina> paginas, int numeroDeFrames)
-        +void simularLFU(List<Pagina> paginas, int numeroDeFrames)
+        +void simularFIFO(List<Pagina> paginas, int frames)
+        +void simularLRU(List<Pagina> paginas, int frames)
+        +void simularLFU(List<Pagina> paginas, int frames)
+    }
+}
+
+' Pacote UI e Main - Entrada e Saída
+package "ui" {
+    class Terminal {
+        +void showResults(String alg, String seq, int falhas)
+        +void showError(String error)
     }
 }
 
 package "main" {
     class PageSimulator {
-        + {static} void main(String[] args)
+        +{static} void main(String[] args)
     }
     class PageSimuladorOperacoes {
-        -Terminal ui
-        -ConfiguracaoSimulacao configuracao
         +PageSimuladorOperacoes(Terminal ui, String[] args)
     }
 }
 
-' Relações de Dependência e Composição (layout)
-PageSimulator --> PageSimuladorOperacoes : inicia
-PageSimuladorOperacoes --> simulacao.ConfiguracaoSimulacao : instancia/configura
-simulacao.Simulacao o-- simulacao.ConfiguracaoSimulacao
-simulacao.Simulacao --> simulacao.SimulacaoAlgoritmos : coordena
-simulacao.Simulacao --> arquivos.FilePageStore : usa
+' --- ORGANIZAÇÃO DAS RELAÇÕES (LAYOUT VERTICAL) ---
 
-simulacao.SimulacaoAlgoritmos -down-> algoritmos.AlgoritmoSubstituicao : aplica
-simulacao.SimulacaoAlgoritmos -right-> ui.Terminal : reporta
+' Fluxo Principal
+PageSimulator -down-> PageSimuladorOperacoes
+PageSimuladorOperacoes -down-> ConfiguracaoSimulacao
+Simulacao o-down- ConfiguracaoSimulacao
+Simulacao -down-> SimulacaoAlgoritmos
+Simulacao -right-> FilePageStore
 
-' Memória
-memoria.Frame *-- memoria.Pagina : contém
-simulacao.SimulacaoAlgoritmos --> memoria.Frame : cria/usa
-arquivos.FilePageStore ..> memoria.Pagina : gera
+' Interações de Simulação
+SimulacaoAlgoritmos -down-> AlgoritmoSubstituicao : utiliza
+SimulacaoAlgoritmos -left-> Terminal : reporta
+SimulacaoAlgoritmos ..> Frame : gerencia
 
-note left of simulacao.SimulacaoAlgoritmos
-  Fluxo principal:
-  - gerar páginas via PageStore
-  - criar frames (array de Frame)
-  - gerar sequência de requisições
-  - para cada requisição: verificar hit/miss, aplicar AlgoritmoSubstituicao
-end note
+' Estrutura
+Frame *-right- Pagina
+
+' Ajuste de visibilidade: esconde membros repetitivos
+hide FIFO members
+hide LRU members
+hide LFU members
+hide PageStore members
+hide Terminal members
 
 @enduml

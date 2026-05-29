@@ -151,34 +151,31 @@ public class SimulacaoAlgoritmos {
         return -1;
     }
 
-    private List<Integer> gerarSequenciaRequisicoes(
-            int quantidade,
-            int limite) {
+    private List<Integer> gerarSequenciaRequisicoes(int quantidade, int limite) {
 
         List<Integer> requisicoes = new ArrayList<>();
         Random random = new Random();
 
-        for (int i = 0; i < quantidade; i++) {
+        for(int i = 0; i < quantidade; i++)
             requisicoes.add(random.nextInt(limite));
-        }
-
+        
         return requisicoes;
     }
 
     private void imprimirFrames(Frame[] frames) {
-        ui.showMessage("Frame Página Conteúdo");
+        ui.showMessage(String.format("%-6s %-8s %-10s", "Frame", "Página", "Conteúdo"));
 
         for (int i = 0; i < frames.length; i++) {
             if (frames[i].estaVazio()) {
-                ui.showMessage(i + " - -");
+                ui.showMessage(String.format("%-6d %-8s %-10s", i, "-", "-"));
             } else {
                 Pagina pagina = frames[i].getPagina();
 
-                ui.showMessage(
-                        i + " "
-                                + pagina.getNumero()
-                                + " "
-                                + pagina.getConteudo());
+                ui.showMessage(String.format(
+                        "%-6d %-8d %-10s",
+                        i,
+                        pagina.getNumero(),
+                        pagina.getConteudo()));
             }
         }
     }
