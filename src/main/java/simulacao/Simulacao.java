@@ -8,6 +8,8 @@ import java.util.Random;
 
 import algoritmos.AlgoritmoSubstituicao;
 import algoritmos.FIFO;
+import algoritmos.LFU;
+import algoritmos.LRU;
 import ui.Terminal;
 import arquivos.FilePageStore;
 import arquivos.PageStore;
@@ -35,7 +37,7 @@ public class Simulacao {
         try {
             paginas = store.generatePages(dir, qtd);
         } catch (Exception e) {
-            System.err.println("Erro ao gerar páginas: " + e.getMessage());
+            ui.showError("Erro ao gerar páginas: " + e.getMessage());
             return;
         }
 
@@ -67,6 +69,7 @@ public class Simulacao {
             ui.showMessage("Página Requerida: " + pagina.getNumero());
 
             if (paginaEstaNaMemoria(frames, pagina.getNumero())) {
+                fifo.registrarAcesso(obterIndicePagina(frames, pagina.getNumero()));
                 imprimirFrames(frames);
                 continue;
             }
@@ -79,32 +82,130 @@ public class Simulacao {
                 fifo.registrarEntrada(frameLivre);
             } else {
                 int frameSubstituir = fifo.escolherFrameParaSubstituir(frames);
-                if (frameSubstituir != -1) 
+                if (frameSubstituir != -1) {
                     frames[frameSubstituir].setPagina(pagina);
+                    fifo.registrarEntrada(frameSubstituir);
+                }
                 
             }
 
             imprimirFrames(frames);
         }
 
-        ui.showMessage("Algoritmo de Substituição de Páginas: FIFO");
-        ui.showMessage("Sequência de Requisição: " + formatarSequencia(requisicoes));
-        ui.showMessage("Total de Falhas de Página: " + totalFalhas);
+        ui.showResults("FIFO", formatarSequencia(requisicoes), totalFalhas);
+    }
+
+    public void simularLFU(List<Pagina> paginas) {
+        ui.showMessage("Simulando LFU...");
+
+        int numeroDeFrames = Integer.parseInt(config.getNumero_de_frames_de_memoria());
+        int quantidadeUnicas = Integer.parseInt(config.getQuantidade_de_paginas_unicas());
+        int quantidadeRequeridas = Integer.parseInt(config.getQuantidades_de_paginas_requeridas());
+
+        Frame[] frames = criarFrames(numeroDeFrames);
+        AlgoritmoSubstituicao lfu = new LFU(numeroDeFrames);
+
+        List<Integer> requisicoes = gerarSequenciaRequisicoes(quantidadeRequeridas, quantidadeUnicas);
+        int totalFalhas = 0;
+
+        for (int numeroPagina : requisicoes) {
+            Pagina pagina = paginas.get(numeroPagina);
+
+            ui.showMessage("Página Requerida: " + pagina.getNumero());
+
+            int frameHit = obterIndicePagina(frames, pagina.getNumero());
+            if (frameHit != -1) {
+                lfu.registrarAcesso(frameHit);
+                imprimirFrames(frames);
+                continue;
+            }
+
+            totalFalhas++;
+            int frameLivre = procurarFrameVazio(frames);
+
+            if (frameLivre != -1) {
+                frames[frameLivre].setPagina(pagina);
+                lfu.registrarEntrada(frameLivre);
+            } else {
+                int frameSubstituir = lfu.escolherFrameParaSubstituir(frames);
+                if (frameSubstituir != -1) {
+                    frames[frameSubstituir].setPagina(pagina);
+                    lfu.registrarEntrada(frameSubstituir);
+                }
+            }
+
+            imprimirFrames(frames);
+        }
+
+        ui.showResults("LFU", formatarSequencia(requisicoes), totalFalhas);
     }
     
-    public void simularLRU() {
+    public void simularLRU(List<Pagina> paginas) {
         ui.showMessage("Simulando LRU...");
-        // Implementação do algoritmo LRU
+
+        int numeroDeFrames = Integer.parseInt(config.getNumero_de_frames_de_memoria());
+        int quantidadeUnicas = Integer.parseInt(config.getQuantidade_de_paginas_unicas());
+        int quantidadeRequeridas = Integer.parseInt(config.getQuantidades_de_paginas_requeridas());
+
+        Frame[] frames = criarFrames(numeroDeFrames);
+        AlgoritmoSubstituicao lru = new LRU(numeroDeFrames);
+
+        List<Integer> requisicoes = gerarSequenciaRequisicoes(quantidadeRequeridas, quantidadeUnicas);
+        int totalFalhas = 0;
+
+        for (int numeroPagina : requisicoes) {
+            Pagina pagina = paginas.get(numeroPagina);
+
+            ui.showMessage("Página Requerida: " + pagina.getNumero());
+
+            // verificar se página está na memória e obter o índice do frame
+            int frameHit = -1;
+            for (int i = 0; i < frames.length; i++) {
+                if (!frames[i].estaVazio() && frames[i].getPagina().getNumero() == numeroPagina) {
+                    frameHit = i;
+                    break;
+                }
+            }
+
+            if (frameHit != -1) {
+                // hit: atualizar timestamp via registrarEntrada
+                lru.registrarEntrada(frameHit);
+                imprimirFrames(frames);
+                continue;
+            }
+
+            // falta de página
+            totalFalhas++;
+            int frameLivre = procurarFrameVazio(frames);
+
+            if (frameLivre != -1) {
+                frames[frameLivre].setPagina(pagina);
+                lru.registrarEntrada(frameLivre);
+            } else {
+                int frameSubstituir = lru.escolherFrameParaSubstituir(frames);
+                if (frameSubstituir != -1) {
+                    frames[frameSubstituir].setPagina(pagina);
+                    lru.registrarEntrada(frameSubstituir);
+                }
+            }
+
+            imprimirFrames(frames);
+        }
+
+        ui.showResults("LRU", formatarSequencia(requisicoes), totalFalhas);
     }
 
     private void escolherAlgoritmo(List<Pagina> paginas) {
         String algoritmo = config.getAlgoritmo_de_substituicao_de_paginas();
         switch (algoritmo) {
             case "LRU":
-                simularLRU();
+                simularLRU(paginas);
                 break;
             case "FIFO":
                 simularFIFO(paginas);
+                break;
+            case "LFU":
+                simularLFU(paginas);
                 break;
             default:
                 ui.showMessage("Algoritmo desconhecido.");
@@ -135,6 +236,15 @@ public class Simulacao {
             }
         }
         return false;
+    }
+
+    private int obterIndicePagina(Frame[] frames, int numeroPagina) {
+        for (int i = 0; i < frames.length; i++) {
+            if (!frames[i].estaVazio() && frames[i].getPagina().getNumero() == numeroPagina) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private List<Integer> gerarSequenciaRequisicoes(int quantidade, int limite) {

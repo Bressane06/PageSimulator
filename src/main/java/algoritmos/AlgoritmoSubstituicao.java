@@ -8,4 +8,7 @@ public interface AlgoritmoSubstituicao {
 
     void registrarEntrada(int frameIndex);
 
+    default void registrarAcesso(int frameIndex) {}
+
+
 }
