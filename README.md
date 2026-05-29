@@ -1,98 +1,98 @@
 # PageSimulator
 
-Projeto Java simples para simular a execução de um algoritmo a partir da classe principal `main.PageSimulator`.
+Simulador em Java do gerenciamento de páginas (memória principal e virtual). A aplicação gera páginas em disco (backing store), cria frames em memória e simula algoritmos de substituição (FIFO, LRU, LFU).
 
 ## Requisitos
 
-- Java 21
-- Maven 3.x, se você quiser compilar com `mvn`
+- JDK 17+ (testado com Java 21)
+- Maven 3.x (opcional, facilita empacotar em JAR)
 
-## Estrutura
+## Principais arquivos / classes
 
-- `src/main/java/main/PageSimulator.java` - ponto de entrada da aplicação
-- `src/main/java/main/PageSimuladorOperacoes.java` - parsing e inicialização
-- `src/main/java/simulacao/Simulacao.java` - orquestração da simulação
-- `src/main/java/arquivos` - implementação do backing store (`FilePageStore`, `PageStore`)
-- `src/main/java/memoria` - modelos `Pagina`, `Frame`
-- `src/main/java/algoritmos` - algoritmos de substituição (`FIFO`, `LRU`, ...)
-- `src/main/java/ui` - saída/terminal
+- `src/main/java/main/PageSimulator.java` — ponto de entrada (`main`)
+- `src/main/java/main/PageSimuladorOperacoes.java` — leitura/validação de argumentos
+- `src/main/java/simulacao/ConfiguracaoSimulacao.java` — modela parâmetros da simulação
+- `src/main/java/simulacao/Simulacao.java` — fluxo principal (gera páginas, escolhe algoritmo)
+- `src/main/java/simulacao/SimulacaoAlgoritmos.java` — lógica de execução dos algoritmos e impressão de frames
+- `src/main/java/arquivos/PageStore.java` — interface do backing store
+- `src/main/java/arquivos/FilePageStore.java` — implementação que lê/gera arquivos `*.pag`
+- `src/main/java/memoria/Pagina.java` — modelo de página (número + conteúdo)
+- `src/main/java/memoria/Frame.java` — modelo do frame (contém `Pagina`)
+- `src/main/java/algoritmos/AlgoritmoSubstituicao.java` — interface dos algoritmos
+- `src/main/java/algoritmos/FIFO.java`, `LRU.java`, `LFU.java` — implementações
+- `src/main/java/ui/UserInterface.java`, `ui/Terminal.java` — saída no terminal
 
-## Como compilar
+## Compilar
 
-### Scripts da raiz
+Opções recomendadas:
 
-O projeto agora inclui scripts simples para compilar e executar sem precisar digitar os comandos completos toda vez:
-
-- Windows PowerShell: `compile.ps1` e `run.ps1`
-- Linux/macOS: `compile.sh` e `run.sh`
-
-Exemplos:
-
-```powershell
-.\compile.ps1
-.\run.ps1 ./teste LRU 5 6 15
-```
+- Usando Maven (gera o JAR em `target/`):
 
 ```bash
-chmod +x compile.sh run.sh
-./compile.sh
-./run.sh ./teste LRU 5 6 15
+mvn clean package
+# JAR será: target/PageSimulator-1.0-SNAPSHOT.jar
 ```
 
-### Usando Maven
+- Usando apenas javac (gera classes em `target/classes`):
 
-Na raiz do projeto, execute:
-
-```bash
-mvn clean compile
-```
-
-Isso gera os `.class` em `target/classes`.
-
-### Sem Maven, usando apenas o JDK
-
-Se o Maven não estiver instalado no seu terminal, você pode compilar direto com `javac`:
-
+PowerShell:
 ```powershell
 New-Item -ItemType Directory -Force target/classes | Out-Null
 $sources = Get-ChildItem -Path src/main/java -Filter *.java -Recurse | ForEach-Object { $_.FullName }
 & javac -encoding UTF-8 -d target/classes $sources
 ```
 
-## Como executar
-
-A aplicação espera os 5 parâmetros do enunciado na ordem:
-
-```
-java -cp target/classes main.PageSimulator [diretorio_das_paginas] [algoritmo] [numero_de_frames] [quantidade_paginas_unicas] [quantidade_paginas_requeridas]
-```
-
-Exemplo (gera páginas em `./teste`, usa FIFO, 3 frames, 10 páginas únicas, 50 requisições):
-
-```
-java -cp target/classes main.PageSimulator ./teste FIFO 3 10 50
+Bash:
+```bash
+mkdir -p target/classes
+find src/main/java -name "*.java" > sources.txt
+javac -encoding UTF-8 -d target/classes @sources.txt
+rm sources.txt
 ```
 
-O programa gera as páginas (arquivos `0.pag`..`N-1.pag`) no diretório escolhido, executa a simulação e imprime, para cada requisição, a tabela de frames e conteúdo, e ao final exibe o algoritmo, a sequência de requisição e o total de page faults.
+- Scripts incluídos (conforto): `compile.ps1`, `compile.sh` — usam `mvn package` ou `javac` dependendo do ambiente.
 
-## Testes manuais e utilitários
+## Executar
 
-Há um utilitário para gerar e inspecionar rapidamente páginas:
-
-```
-java -cp target/classes main.TestGerador <diretorio> <quantidade_paginas>
-```
-
-Exemplo:
+A aplicação aceita 5 parâmetros (na ordem):
 
 ```
-java -cp target/classes main.TestGerador test_pages 5
+<diretorio_das_paginas> <algoritmo> <numero_de_frames> <quantidade_paginas_unicas> <quantidade_paginas_requeridas>
 ```
 
-Isso cria os arquivos `0.pag`..`4.pag` em `test_pages` e imprime o conteúdo gerado.
+Exemplos:
 
-O projeto ainda não tem testes JUnit; para validação automática você pode adicionar testes que verifiquem o comportamento de `algoritmos/FIFO` e `algoritmos/LRU`.
+- Executar o JAR (após `mvn package`):
 
-## Observação
+```bash
+java -jar target/PageSimulator-1.0-SNAPSHOT.jar ./teste FIFO 3 10 50
+```
 
-O comando `mvn exec:java` só vai funcionar se o plugin `exec-maven-plugin` for adicionado ao `pom.xml`. Hoje o modo suportado é compilar com `mvn clean compile` ou usar `javac` conforme mostrado acima e executar com `java -cp target/classes main.PageSimulator ...`.
+- Executar a partir de classes compiladas (sem empacotar):
+
+```bash
+java -cp target/classes main.PageSimulator ./teste LRU 4 10 50
+```
+
+- Usando os scripts (PowerShell):
+
+```powershell
+.\compile.ps1
+.\run.ps1 .\teste FIFO 3 10 50
+```
+
+Após a execução, o programa criará os arquivos `0.pag` .. `N-1.pag` no diretório informado e imprimirá, para cada requisição, quais páginas estão nos frames e seu conteúdo; no final mostra o algoritmo, a sequência de requisições e o total de falhas de página.
+
+## Observações e dicas
+
+- Se quiser reproduzir resultados consistentes para análise, ajuste `SimulacaoAlgoritmos#gerarSequenciaRequisicoes` para usar uma `Random` com semente fixa.
+- Para gerar o diagrama de classes (`docs/estrutura.puml`) use a extensão PlantUML no VS Code ou um renderizador online (ex.: PlantUML server) e exporte PNG/SVG.
+- Não há testes automatizados no repositório — recomendo adicionar JUnit para validar `algoritmos/*`.
+
+## Perguntas frequentes rápidas
+
+- Como altero o algoritmo? Passe `LRU`, `FIFO` ou `LFU` como segundo parâmetro.
+- Onde os arquivos `.pag` são criados? No caminho passado como primeiro parâmetro (será criado se não existir).
+
+---
+Se quiser, atualizo `compile.ps1` e `compile.sh` para padronizar a criação do JAR e explicito comandos para Windows/macOS no README.
