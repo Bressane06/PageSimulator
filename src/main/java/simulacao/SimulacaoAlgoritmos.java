@@ -131,9 +131,9 @@ public class SimulacaoAlgoritmos {
 
     private int procurarFrameVazio(Frame[] frames) {
         for (int i = 0; i < frames.length; i++) {
-            if (frames[i].estaVazio()) {
+            if (frames[i].estaVazio()) 
                 return i;
-            }
+            
         }
 
         return -1;
@@ -141,11 +141,9 @@ public class SimulacaoAlgoritmos {
 
     private int obterIndicePagina(Frame[] frames, int numeroPagina) {
         for (int i = 0; i < frames.length; i++) {
-            if (!frames[i].estaVazio()
-                    && frames[i].getPagina().getNumero() == numeroPagina) {
-
+            if (!frames[i].estaVazio() && frames[i].getPagina().getNumero() == numeroPagina) 
                 return i;
-            }
+            
         }
 
         return -1;

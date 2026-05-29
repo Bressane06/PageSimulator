@@ -33,9 +33,9 @@ public class LFU implements AlgoritmoSubstituicao {
 
         for (int i = 0; i < frames.length; i++) {
             Frame frame = frames[i];
-            if (frame == null || frame.estaVazio()) {
+            if (frame == null || frame.estaVazio()) 
                 continue;
-            }
+            
 
             int frequenciaAtual = frequencias[i];
             long ultimoUso = lastUsed[i];
