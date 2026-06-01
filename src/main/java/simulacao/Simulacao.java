@@ -9,6 +9,11 @@ import arquivos.PageStore;
 import memoria.Pagina;
 import ui.Terminal;
 
+/**
+ *
+ * @author Gabriel Bressane
+ */
+
 public class Simulacao{
 
     private final ConfiguracaoSimulacao config;

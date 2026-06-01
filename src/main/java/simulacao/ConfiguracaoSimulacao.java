@@ -1,5 +1,10 @@
 package simulacao;
 
+/**
+ *
+ * @author Gabriel Bressane
+ */
+
 public class ConfiguracaoSimulacao {
     
     public String diretorio_das_paginas;

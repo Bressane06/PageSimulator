@@ -3,6 +3,11 @@ package algoritmos;
 import memoria.Frame;
 
 /**
+ *
+ * @author Gabriel Bressane
+ */
+
+/**
  * LFU - Least Frequently Used
  *
  * Substitui a página com menor frequência de uso. Em caso de empate,

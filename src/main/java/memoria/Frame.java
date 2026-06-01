@@ -1,5 +1,10 @@
 package memoria;
 
+/**
+ *
+ * @author Gabriel Bressane
+ */
+
 public class Frame {
 
     private Pagina pagina;

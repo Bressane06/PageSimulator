@@ -4,6 +4,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import memoria.Frame;
 
+/**
+ *
+ * @author Gabriel Bressane
+ */
+
 public class FIFO implements AlgoritmoSubstituicao {
 
 	private final Queue<Integer> fila;

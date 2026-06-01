@@ -3,6 +3,11 @@ package algoritmos;
 import memoria.Frame;
 
 /**
+ *
+ * @author Gabriel Bressane
+ */
+
+/**
  * LRU - Least Recently Used
  *
  * Implementação simples de LRU que mantém um timestamp (tick) de última

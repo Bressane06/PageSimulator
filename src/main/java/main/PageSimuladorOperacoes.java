@@ -2,6 +2,11 @@ package main;
 import ui.Terminal;
 import simulacao.ConfiguracaoSimulacao;
 
+/**
+ * Simula operações de gerenciamento de páginas.
+ *
+ * @author Gabriel Bressane
+ */
 public class PageSimuladorOperacoes {
  
     public Terminal ui;

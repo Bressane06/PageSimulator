@@ -9,6 +9,11 @@ import java.util.List;
 
 import memoria.Pagina;
 
+/**
+ * Armazena páginas em arquivos.
+ *
+ * @author Gabriel Bressane
+ */
 public class FilePageStore implements PageStore {
 
     @Override

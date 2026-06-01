@@ -1,5 +1,10 @@
 package memoria;
 
+/**
+ *
+ * @author Gabriel Bressane
+ */
+
 public class Pagina {
 
     private final int numero;

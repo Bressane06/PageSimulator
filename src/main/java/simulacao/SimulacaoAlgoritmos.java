@@ -12,6 +12,11 @@ import memoria.Frame;
 import memoria.Pagina;
 import ui.Terminal;
 
+/**
+ *
+ * @author Gabriel Bressane
+ */
+
 public class SimulacaoAlgoritmos {
 
     private final ConfiguracaoSimulacao config;
