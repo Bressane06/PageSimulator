@@ -9,27 +9,23 @@ import arquivos.PageStore;
 import memoria.Pagina;
 import ui.Terminal;
 
-public class Simulacao
-{
+public class Simulacao{
 
     private final ConfiguracaoSimulacao config;
     private final Terminal ui;
     private final SimulacaoAlgoritmos simulacaoAlgoritmos;
 
-    public Simulacao(ConfiguracaoSimulacao config)
-    {
+    public Simulacao(ConfiguracaoSimulacao config){
         this.config = config;
         this.ui = new Terminal();
         this.simulacaoAlgoritmos = new SimulacaoAlgoritmos(config, ui);
     }
 
-    public void executarSimulacao()
-    {
+    public void executarSimulacao(){
         executarSimulacao(this.config);
     }
 
-    public void executarSimulacao(ConfiguracaoSimulacao config)
-    {
+    public void executarSimulacao(ConfiguracaoSimulacao config){
         
         // fluxo:
 
@@ -39,21 +35,18 @@ public class Simulacao
         PageStore store = new FilePageStore();
         List<Pagina> paginas;
 
-        try
-        {
+        try{
             paginas = store.generatePages(dir, quantidadePaginas);
         }
-        catch (Exception e)
-        {
+        catch (Exception e){
             ui.showError("Erro ao gerar páginas: " + e.getMessage());
             return;
         }
 
-        ui.showMessage("Geradas " + paginas.size() + " paginas em: " + dir.toAbsolutePath());
-        for (Pagina pagina : paginas)
-        {
-            ui.showMessage("Pagina " + pagina.getNumero() + " -> " + pagina.getConteudo());
-        }
+        //ui.showMessage("Geradas " + paginas.size() + " paginas em: " + dir.toAbsolutePath());
+        //for (Pagina pagina : paginas)
+        
+        //    ui.showMessage("Pagina " + pagina.getNumero() + " -> " + pagina.getConteudo());
 
         // Passo 2: escolher o algoritmo de substituição e simular
         simulacaoAlgoritmos.escolherAlgoritmo(paginas);

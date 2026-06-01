@@ -14,14 +14,16 @@ public class FIFO implements AlgoritmoSubstituicao {
 
 	@Override
 	public int escolherFrameParaSubstituir(Frame[] frames) {
-		
-        if (fila.isEmpty()) 
-			return -1;
 
-        // .poll() remove e retorna o elemento mais antigo da fila
-		int frameMaisAntigo = fila.poll();
-		fila.add(frameMaisAntigo);
-		return frameMaisAntigo;
+		while (!fila.isEmpty()) {
+			int candidato = fila.poll();
+
+			if (!frames[candidato].estaVazio()) 
+				return candidato;
+			
+		}
+
+		return -1;
 	}
 
 	@Override

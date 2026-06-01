@@ -82,14 +82,14 @@ public class SimulacaoAlgoritmos {
         for (int numeroPagina : requisicoes) {
             Pagina pagina = paginas.get(numeroPagina);
 
-            ui.showMessage("Página Requerida: " + pagina.getNumero());
+            // ui.showMessage("Página Requerida: " + pagina.getNumero());
 
             int frameHit =
                     obterIndicePagina(frames, pagina.getNumero());
 
             if (frameHit != -1) {
                 algoritmo.registrarAcesso(frameHit);
-                imprimirFrames(frames);
+                // imprimirFrames(frames);
                 continue;
             }
 
@@ -110,7 +110,7 @@ public class SimulacaoAlgoritmos {
                 }
             }
 
-            imprimirFrames(frames);
+            // imprimirFrames(frames);
         }
 
         ui.showResults(
